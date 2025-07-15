@@ -1,5 +1,7 @@
 import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
 
 export default defineConfig({
-  base: '/simple_3js_es6_demo/', // 部署到 GitHub Pages 时需改为你的仓库名
+  base: '/DW_3dTest/',
+  plugins: [vue()],
 }); 

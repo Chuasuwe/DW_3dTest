@@ -1,24 +1,38 @@
 {
   "name": "simple_3js_es6_demo",
   "version": "1.0.0",
-  "description": "Three.js ES6 天空演示项目",
+  "description": "Three.js ES6 demo",
   "main": "main.js",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "deploy": "vite build && gh-pages -d dist",
     "network": "node networkServer.js",
     "start": "vite",
     "serve": "node networkServer.js"
   },
-  "keywords": ["three.js", "3d", "webgl", "sky", "hdri"],
+  "keywords": [
+    "three.js",
+    "3d",
+    "webgl",
+    "sky",
+    "hdri"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "three": "^0.157.0"
+    "three": "^0.157.0",
+    "vue": "^3.4.0",
+    "gsap": "^3.12.0"
   },
   "devDependencies": {
-    "vite": "^7.0.2"
+    "gh-pages": "^6.3.0",
+    "vite": "^6.0.0",
+    "@vitejs/plugin-vue": "^5.0.0",
+    "tailwindcss": "^3.4.0",
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.4.0"
   }
 }

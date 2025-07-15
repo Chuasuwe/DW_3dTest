@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 
-// 坐标转换：Blender Z-up → Three.js Y-up
+// Coordinate conversion: Blender Z-up → Three.js Y-up
 function blenderToThreeCoords(vec) {
     return new THREE.Vector3(vec.x, vec.z, -vec.y);
 }
 
-// 计算智能注视目标
+// Calculate smart look-at target
 function calculateSmartLookAtTarget(cameraPosition, cameraRotation, fov) {
     const radX = cameraRotation[0] * Math.PI / 180;
     const radY = cameraRotation[1] * Math.PI / 180;
@@ -22,16 +22,16 @@ function calculateSmartLookAtTarget(cameraPosition, cameraRotation, fov) {
     return target;
 }
 
-// 从 JSON 加载相机预设
-export async function loadCameraPresetsFromJSON(url) {
-    const response = await fetch(url);
-    if (!response.ok) {
-        throw new Error('Failed to load camera presets JSON');
-    }
-    const data = await response.json();
-    return data.cameras.map(cam => {
+// Load camera presets from JSON, optionally merge sun presets
+export async function loadCameraPresetsFromJSON(cameraUrl, sunUrl = 'assets/sun_presets.json') {
+    const cameraResponse = await fetch(cameraUrl);
+    if (!cameraResponse.ok) throw new Error('Failed to load camera presets JSON');
+    const cameraData = await cameraResponse.json();
+    
+    return cameraData.cameras.map(cam => {
         const position = blenderToThreeCoords(new THREE.Vector3(...cam.position));
         const lookAtTarget = blenderToThreeCoords(new THREE.Vector3(...cam.lookAtTarget));
+        
         return {
             name: cam.name,
             position: position,
@@ -44,12 +44,13 @@ export async function loadCameraPresetsFromJSON(url) {
     });
 }
 
-// 相机控制器
+// Camera controller
 export class CameraController {
-    constructor(threeCamera, cameraPresets) {
+    constructor(threeCamera, cameraPresets, onTransitionComplete = null) {
         this.threeCamera = threeCamera;
         this.cameraPresets = cameraPresets;
         this.currentIndex = 0;
+        this.onTransitionComplete = onTransitionComplete;
         this.basePosition = new THREE.Vector3();
         this.baseTarget = new THREE.Vector3();
         
@@ -80,12 +81,12 @@ export class CameraController {
     }
 
     _setupMouse() {
-        // 启用鼠标移动相机偏移
+        // Enable mouse movement to offset camera
         window.addEventListener('mousemove', (event) => {
             const mouseX = (event.clientX / window.innerWidth) * 2 - 1;
             let mouseY = (event.clientY / window.innerHeight) * 2 - 1;
             mouseY = -mouseY;
-            // 适度缩小偏移量，保证体验自然
+            // Appropriately reduce the offset to ensure a natural experience
             this.targetOffset.set(mouseX * 0.21, mouseY * 0.105, 0);
         });
     }
@@ -106,6 +107,11 @@ export class CameraController {
             active: true,
             toIndex
         };
+        
+        // Trigger callback immediately when transition starts
+        if (this.onTransitionComplete) {
+            this.onTransitionComplete(toIndex);
+        }
     }
 
     _easeInOutCubic(t) {
@@ -147,5 +153,15 @@ export class CameraController {
 
     getCurrentPresetName() {
         return this.cameraPresets[this.currentIndex]?.name || '';
+    }
+
+    // Get current active preset object
+    getCurrentPreset() {
+        return this.cameraPresets[this.currentIndex] || null;
+    }
+
+    // Get current camera index
+    getCurrentIndex() {
+        return this.currentIndex;
     }
 } 

@@ -1,0 +1,9 @@
+{
+  "presets": [
+    { "name": "Camera_01", "sunElevation": 0, "sunAzimuth": 100, "hdriIntensity": 0.4 },
+    { "name": "Camera_02", "sunElevation": 40, "sunAzimuth": 140, "hdriIntensity": 0.8 },
+    { "name": "Camera_03", "sunElevation": 60, "sunAzimuth": 240, "hdriIntensity": 1.4 },
+    { "name": "Camera_04", "sunElevation": 40, "sunAzimuth": 120, "hdriIntensity": 0.8 },
+    { "name": "Camera_05", "sunElevation": -2, "sunAzimuth": 120, "hdriIntensity": 0.05 }
+  ]
+} 
